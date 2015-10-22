@@ -1,0 +1,64 @@
+## Usage
+
+Einhorn is the language-independent shared socket manager. Run
+`einhorn -h` to see detailed usage. At a high level, usage looks like
+the following:
+
+    einhorn [options] program
+
+Einhorn will open one or more shared sockets and run multiple copies
+of your process. You can seamlessly reload your code, dynamically
+reconfigure Einhorn, and more.
+
+### Options
+
+    -b, --bind ADDR                  Bind an address and add the corresponding FD via the environment
+    -c, --command-name CMD_NAME      Set the command name in ps to this value
+    -d, --socket-path PATH           Where to open the Einhorn command socket
+    -e, --pidfile PIDFILE            Where to write out the Einhorn pidfile
+    -f, --lockfile LOCKFILE          Where to store the Einhorn lockfile
+    -g, --command-socket-as-fd       Leave the command socket open as a file descriptor, passed in the EINHORN_SOCK_FD environment variable. This allows your worker processes to ACK without needing to know where on the filesystem the command socket lives.
+    -h, --help                       Display this message
+    -k, --kill-children-on-exit      If Einhorn exits unexpectedly, gracefully kill all its children
+    -l, --backlog N                  Connection backlog (assuming this is a server)
+    -m, --ack-mode MODE              What kinds of ACK to expect from workers. Choices: FLOAT (number of seconds until assumed alive), manual (process will speak to command socket when ready). Default is MODE=1.
+    -n, --number N                   Number of copies to spin up
+    -p, --preload PATH               Load this code into memory, and fork but do not exec upon spawn. Must define an "einhorn_main" method
+    -q, --quiet                      Make output quiet (can be reconfigured on the fly)
+    -s, --seconds N                  Number of seconds to wait until respawning
+    -v, --verbose                    Make output verbose (can be reconfigured on the fly)
+        --drop-env-var VAR_NAME      Delete VAR_NAME from the environment that is restored on upgrade
+        --reexec-as=CMDLINE          Substitute CMDLINE for \"einhorn\" when upgrading
+        --nice MASTER[:WORKER=0][:RENICE_CMD=/usr/bin/renice]
+                                     Unix nice level at which to run the einhorn processes. If not running as root, make sure to ulimit -e as appopriate.
+        --with-state-fd STATE        [Internal option] With file descriptor containing state
+        --upgrade-check              [Internal option] Check if Einhorn can exec itself and exit with status 0 before loading code
+    -t, --signal-timeout=T           If children do not react to signals after T seconds, escalate to SIGKILL
+        --version                    Show version
+/Library/Ruby/Gems/2.0.0/gems/einhorn-0.6.4/bin/einhorn:255:in `block (2 levels) in <top (required)>': Invalid ack-mode "/sample_goji" (valid modes: FLOAT or manual) (RuntimeError)
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1395:in `call'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1395:in `block in parse_in_order'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1351:in `catch'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1351:in `parse_in_order'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1345:in `order!'
+	from /Library/Ruby/Gems/2.0.0/gems/einhorn-0.6.4/bin/einhorn:321:in `<top (required)>'
+	from /usr/local/bin/einhorn:23:in `load'
+	from /usr/local/bin/einhorn:23:in `<main>'
+/Library/Ruby/Gems/2.0.0/gems/einhorn-0.6.4/bin/einhorn:255:in `block (2 levels) in <top (required)>': Invalid ack-mode "sample_goji" (valid modes: FLOAT or manual) (RuntimeError)
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1395:in `call'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1395:in `block in parse_in_order'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1351:in `catch'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1351:in `parse_in_order'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1345:in `order!'
+	from /Library/Ruby/Gems/2.0.0/gems/einhorn-0.6.4/bin/einhorn:321:in `<top (required)>'
+	from /usr/local/bin/einhorn:23:in `load'
+	from /usr/local/bin/einhorn:23:in `<main>'
+/Library/Ruby/Gems/2.0.0/gems/einhorn-0.6.4/bin/einhorn:255:in `block (2 levels) in <top (required)>': Invalid ack-mode "sample_goji" (valid modes: FLOAT or manual) (RuntimeError)
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1395:in `call'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1395:in `block in parse_in_order'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1351:in `catch'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1351:in `parse_in_order'
+	from /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/optparse.rb:1345:in `order!'
+	from /Library/Ruby/Gems/2.0.0/gems/einhorn-0.6.4/bin/einhorn:321:in `<top (required)>'
+	from /usr/local/bin/einhorn:23:in `load'
+	from /usr/local/bin/einhorn:23:in `<main>'

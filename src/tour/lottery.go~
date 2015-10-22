@@ -1,0 +1,17 @@
+package main
+
+import (
+	"fmt"
+	"github.com/kyokomi/lottery"
+	"math/rand"
+	"time"
+)
+
+func main() {
+	lot := lottery.New(rand.New(rand.NewSource(time.Now().UnixNano())))
+	if lot.LotOf(1, 5) {
+		fmt.Print("1/5の確率の処理")
+	} else {
+		fmt.Print("それ以外")
+	}
+}

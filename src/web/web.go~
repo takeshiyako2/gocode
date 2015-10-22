@@ -1,0 +1,42 @@
+package main
+
+import (
+    "fmt"
+    "net/http"
+    "log"
+    "html/template"
+    "time"
+)
+
+type TemplateData struct {
+    Title string
+    Datetime string
+}
+
+func HelloServer(w http.ResponseWriter, r *http.Request) {
+    // 親テンプレートindex.htmlと、小テンプレートbody.htmlを用意
+    tmpl := template.Must(template.ParseFiles("views/index.html", "views/body.html"))
+
+    // タイトル
+    const title = "現在の時刻"
+
+    // bodyに表示するコンテンツ 
+    // 時刻オブジェクトを文字列に変換
+    datetime := time.Now().String()
+
+    // テンプレートを実行して出力
+    templatedata := TemplateData{title, datetime}
+    if err := tmpl.ExecuteTemplate(w, "base", templatedata); err != nil {
+        fmt.Println(err)
+    }
+}
+
+func main() {
+    http.HandleFunc("/", HelloServer) 
+    log.Printf("Start Go HTTP Server")
+    err := http.ListenAndServe(":4000", nil)
+    if err != nil {
+       log.Fatal("ListenAndServe: ", err)
+    }
+}
+
